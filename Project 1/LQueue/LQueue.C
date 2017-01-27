@@ -164,3 +164,46 @@ void Queue::move_to_front(const QueueElement & value)
 }
 
 
+void Queue::merge_two_queues(Queue q1, Queue q2) {
+    // base case
+    
+    Queue q3;
+    
+    if (q1.empty()) {
+        while (!q2.empty()) {
+            q3.enqueue(q2.front());
+            q2.dequeue();
+        }
+        q1 = q3;
+    }
+    
+    while (!(q1.empty() || q2.empty())) {
+        if (q1.front() <= q2.front()) {
+            q3.enqueue(q1.front());
+            q1.dequeue();
+            q3.display(cout);
+        }
+        else {
+            q3.enqueue(q2.front());
+            q2.dequeue();
+            q3.display(cout);
+        }
+    }
+    
+    while (!q1.empty()) {
+        q3.enqueue(q1.front());
+        q1.dequeue();
+        q3.display(cout);
+    }
+    
+    while (!q2.empty()) {
+        q3.enqueue(q2.front());
+        q2.dequeue();
+        q3.display(cout);
+    }
+    
+    q1 = q3;
+    // free q3??
+}
+
+
