@@ -8,7 +8,8 @@
 using namespace std;
 
 void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, int & maxSize);
-void startRunway(Queue & queue, int currentTime, int & startTime, bool &ruwayAvailable , int &length, string note);
+void activateRunway(Queue & queue, int currentTime, int & start, bool &ruwayAvailable , int &length, string note);
+void deactivateRunway(Queue & queue, string note, bool &runwayAvailable);
 
 void print(Queue q){
 	q.display(cout);
@@ -54,11 +55,9 @@ void mainSim(){
 	int maxLSize = 0;
 	int maxTSize = 0;
 
-	int takeOffTime_start_A = -1 - takeOffTime;
-	int takeOffTime_start_B = -1 - takeOffTime;
+	int takeOffTime_start = -1 - takeOffTime;
 
-	int landingTime_start_A = -1 - landingTime;
-	int landingTime_start_B = -1 - landingTime;
+	int landingTime_start = -1 - landingTime;
 
 	int currentTime = 0;
 	bool runwayAvailable = true;
@@ -75,6 +74,8 @@ void mainSim(){
 
 		int totalPlanesLanding = 0;
 		int totalPlanesTakeOff = 0;
+		int totalTakeOffTime = 0;
+		int totalLandTime = 0;
 
 		if (currentTime < length) {
 			int randLand = rand() % 60;
@@ -82,7 +83,7 @@ void mainSim(){
 
 			if (randLand < landRate) {
 				cout << '\t' << "Flight " << planeAdd << "Wants to land || Adding to landing Q" ;
-				enqueue(lQ, planeAdd, currentTime, totalPlanesLanding. maxLSize);
+				enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLSize);
 			}
 
 			if (randTakeoff < takeOffRate){
@@ -92,9 +93,20 @@ void mainSim(){
 		}
 
 		if(ruwayAvailable){
-			if(!tQ.empty() && lQ.empty){
-				
+			if(!tQ.empty() && lQ.empty()){
+				activateRunway(tQ, planeAdd, currentTime, takeOffTime_start, !runwayAvailable, totalTakeOffTime, "Taking off");
 			}
+			else if (!lQ.empty()){
+				activateRunway(lQ, currentTime,, takeOffTime_start, !runwayAvailable, totalLandTime, "Landind");
+
+			}
+		}
+
+		else{
+			int nominalTakeOffTime = currentTime - takeOffTime_start;
+
+			if (nominalTakeOffTime == takeOffTime && !tQ.empty())
+
 		}
 
 
