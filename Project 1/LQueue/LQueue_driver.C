@@ -77,7 +77,7 @@ void activateRunway(Queue & queue, int currentTime, int & startTime, bool &runwa
   runwayAvailable = false;
 
   //stats
-  //length += currentTime - queue.frontTime();
+  length += currentTime - queue.time_at_start();
 }
 
 void deactivateRunway(Queue & queue, string note, bool &runwayAvailable){
@@ -132,8 +132,8 @@ void mainSim(){
   Queue tQ; //takeoff q
 //------------------------------------//
   int planeAdd = 1000;
-  int maxLSize = 0;
-  int maxTSize = 0;
+  int maxLQSize = 0;
+  int maxTQSize = 0;
 
   int takeOffTime_start = -1 - takeOffTime;
 
@@ -164,15 +164,16 @@ void mainSim(){
 
       if (randLand < landRate) {
         cout << '\t' << "Flight " << planeAdd << "Wants to land || Adding to landing Q" ;
-        enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLSize);
+        enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLQSize);
       }
 
       if (randTakeoff < takeOffRate){
-        cout << '\t' << "Flight " << planeAdd << "Wants to take off || Adding to take off Q" ;
-        enqueue(tQ, planeAdd, currentTime, totalPlanesTakeOff, maxTSize);
+        cout << '\t' << "Flight " << planeAdd << "  Wants to take off || Adding to take off Q" ;
+        enqueue(tQ, planeAdd, currentTime, totalPlanesTakeOff, maxTQSize);
       }
     }
-  }
+
+  
 
     if(runwayAvailable){
       if(!tQ.empty() && lQ.empty()){
@@ -203,10 +204,11 @@ void mainSim(){
 
     if (currentTime > length){
       cout << "End sim" << endl;
-      //break;
+      break;
     }
 
-    currentTime++;
+    currentTime+=1;
+  }
   
 
 }
