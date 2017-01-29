@@ -72,7 +72,7 @@ class Queue
     Postcondition: Returns true if queue is empty and false otherwise.
   -----------------------------------------------------------------------*/
 
-  void enqueue(const QueueElement & value, const int & value1);
+  void enqueue(const QueueElement & value);
   /*-----------------------------------------------------------------------
     Add a value to a queue.
 
@@ -111,12 +111,6 @@ class Queue
 
   void move_to_front(const QueueElement & value);
 
-  void merge_two_queues(Queue q1, Queue q2);
-
-  int size();
-
-  int time_at_start() const;
-
 
 
  private:
@@ -126,16 +120,14 @@ class Queue
     public:
       QueueElement data;
       Node * next;
-
-      int start;
       //--- Node constructor
-      Node(QueueElement value, int time = 0, Node * link = 0)
+      Node(QueueElement value, Node * link = 0)
       /*-------------------------------------------------------------------
-        Precondition:  time, value and link are received
+        Precondition:  value and link are received
         Postcondition: A Node has been constructed with value in its 
              data part and its next part set to link (default 0).
        ------------------------------------------------------------------*/
-      { data = value; next = link; start = time; }
+      { data = value; next = link; }
 
   };
 

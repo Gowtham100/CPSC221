@@ -81,9 +81,9 @@ bool Queue::empty() const
 }
 
 //--- Definition of enqueue()
-void Queue::enqueue(const QueueElement & value, const int & value1)
+void Queue::enqueue(const QueueElement & value)
 {
-   Queue::NodePointer newptr = new Queue::Node(value,value1);
+   Queue::NodePointer newptr = new Queue::Node(value);
    if (empty())
       myFront = myBack = newptr;
    else
@@ -126,10 +126,6 @@ void Queue::dequeue()
    }   
    else
       cerr << "*** Queue is empty -- can't remove a value ***\n";
-}
-
-int Queue::time_at_start() const {
-  return (myFront -> start);
 }
 
 void Queue::move_to_front(const QueueElement & value)
@@ -175,7 +171,7 @@ void Queue::merge_two_queues(Queue q1, Queue q2) {
     
     if (q1.empty()) {
         while (!q2.empty()) {
-            q3.enqueue(q2.front(), q2.myFront->start);
+            q3.enqueue(q2.front());
             q2.dequeue();
         }
         q1 = q3;
@@ -183,42 +179,31 @@ void Queue::merge_two_queues(Queue q1, Queue q2) {
     
     while (!(q1.empty() || q2.empty())) {
         if (q1.front() <= q2.front()) {
-            q3.enqueue(q1.front(), q1.myFront->start);
+            q3.enqueue(q1.front());
             q1.dequeue();
             q3.display(cout);
         }
         else {
-            q3.enqueue(q2.front(), q2.myFront->start);
+            q3.enqueue(q2.front());
             q2.dequeue();
             q3.display(cout);
         }
     }
     
     while (!q1.empty()) {
-        q3.enqueue(q1.front(), q1.myFront->start);
+        q3.enqueue(q1.front());
         q1.dequeue();
         q3.display(cout);
     }
     
     while (!q2.empty()) {
-        q3.enqueue(q2.front(), q2.myFront->start);
+        q3.enqueue(q2.front());
         q2.dequeue();
         q3.display(cout);
     }
     
     q1 = q3;
     // free q3??
-}
-
-int Queue::size(){
-  int count = 0;
-  Queue::NodePointer ptr;
-
-  for (ptr = myFront; ptr != 0; ptr = ptr->next){
-    count++;
-  }
-
-  return count;
 }
 
 
