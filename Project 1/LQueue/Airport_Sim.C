@@ -8,7 +8,7 @@
 using namespace std;
 
 void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, int & maxSize);
-void activateRunway(Queue & queue, int currentTime, int & start, bool &ruwayAvailable , int &length, string note);
+void activateRunway(Queue & queue, int currentTime, int & startTime, bool &ruwayAvailable , int &length, string note);
 void deactivateRunway(Queue & queue, string note, bool &runwayAvailable);
 
 void print(Queue q){
@@ -17,6 +17,34 @@ void print(Queue q){
 
 int main(void){
 	mainSim();
+}
+
+void activateRunway(Queue & queue, int currentTime, int & startTime, bool &ruwayAvailable , int &length, string note){
+	cout << '\t' <<  note << " from Queue " << queue.front() << endl;
+	startTime = currentTime;
+	runwayAvailable = false;
+
+	//stats
+	//length += currentTime - queue.frontTime();
+}
+
+void deactivateRunway(Queue & queue, string note, bool &runwayAvailable){
+	queue.dequeue();
+	cout << '\t' <<  note << " done " << queue.size() << " in Queue " << endl;
+	runwayAvailable =  true;
+}
+
+void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, int & maxSize){
+	queue.enqueue(planeAdd++, currentTime);
+	cout << queue.size() << " in Queue " << endl;
+
+	if(queue.size() > maxSize){
+		maxSize = queue.size();
+	}
+
+	totalPlanes++;
+
+
 }
 
 void mainSim(){
@@ -61,7 +89,6 @@ void mainSim(){
 
 	int currentTime = 0;
 	bool runwayAvailable = true;
-	//bool runwayAvailable_B = true;
 
 	while (true){
 		cout << "Time now : " << currentTime << endl;
@@ -91,6 +118,7 @@ void mainSim(){
 				enqueue(tQ, planeAdd, currentTime, totalPlanesTakeOff, maxTSize);
 			}
 		}
+	}
 
 		if(ruwayAvailable){
 			if(!tQ.empty() && lQ.empty()){
@@ -104,14 +132,24 @@ void mainSim(){
 
 		else{
 			int nominalTakeOffTime = currentTime - takeOffTime_start;
+			int nominalLandingTime = currentTime - landingTime_start;
 
-			if (nominalTakeOffTime == takeOffTime && !tQ.empty())
+			if (nominalTakeOffTime == takeOffTime && !tQ.empty()){
+				deactivateRunway(tQ, "Take Off", !runwayAvailable);
+			}
+			else if (nominalLandingTime == landingTime && !lQ.empty()){
+				deactivateRunway(lQ, "Landing", !runwayAvailable);
+			}
 
 		}
 
+		if (currentTime > length){
+			cout << "End sim" << endl;
+			break;
+		}
 
-
-	}
+		currentTime++;
+	
 
 }
 
