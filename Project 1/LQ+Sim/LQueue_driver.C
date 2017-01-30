@@ -82,7 +82,7 @@ void activateRunway(Queue & queue, int currentTime, int & startTime, bool &runwa
 
 void deactivateRunway(Queue & queue, string note, bool &runwayAvailable){
   queue.dequeue();
-  cout << '\t' <<  note << " done " << queue.size() << " in Queue " << endl;
+  cout << '\t' <<  note << " done, " << queue.size() << " in Queue " << endl;
   runwayAvailable =  true;
 }
 
@@ -96,8 +96,8 @@ void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, 
 
   totalPlanes++;
 
-
 }
+
 
 void mainSim(){
   int landingTime;
@@ -138,12 +138,24 @@ void mainSim(){
   int takeOffTime_start = -1 - takeOffTime;
 
   int landingTime_start = -1 - landingTime;
+    int waitingMins = 0;
+    int occupyMins = 0;
 
   int currentTime = 0;
+  //runway status
+    bool landing = false;
+    bool takeoff = false;
   bool runwayAvailable = true;
 
+    //stats
+    int landingTimeLeft = 0;
+    int takeoffTimeLeft = 0;
+    int totalLandingTimeWait = 0;
+    int totalTakeoffTimeWait = 0;
   int totalTakeOffTime = 0;
   int totalLandTime = 0;
+    int totalWaitedTakeoffPlanes = 0;
+    int totalWaitedLandingPlanes = 0;
 
   while (true){
     cout << "Time now : " << currentTime << endl;
@@ -163,27 +175,51 @@ void mainSim(){
       int randTakeoff = rand() % 60;
 
       if (randLand < landRate) {
-        cout << '\t' << "Flight " << planeAdd << "Wants to land || Adding to landing Q" ;
+        cout << '\t' << "Flight " << planeAdd << " Wants to land || Adding to landing Q, " ;
         enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLQSize);
+          maxLQSize++;
+          if (lQ.size() > 1) {
+              totalWaitedTakeoffPlanes++
+          }
       }
 
       if (randTakeoff < takeOffRate){
-        cout << '\t' << "Flight " << planeAdd << "  Wants to take off || Adding to take off Q" ;
+        cout << '\t' << "Flight " << planeAdd << " Wants to take off || Adding to take off Q, " ;
         enqueue(tQ, planeAdd, currentTime, totalPlanesTakeOff, maxTQSize);
+          maxTQSize++;
+          if (tQ.size() > 1) {
+              totalWaitedTakeoffPlanes++;
+          }
       }
     }
-
+      // Winson, stat tracking code
+      if (landing) {
+          landingTimeLeft-=1;
+      }
+      
+      if(takeoff) {
+          takeoffTimeLeft-=1;
+      }
+      
+      if (takeoffTimeLeft > 0 && !lQ.empty()) {
+          totalLandingTimeWait++;
+      } else if (landingTimeLeft > 0 && !tQ.empty()) {
+          totalTakeOffTimeWait++;
+      }
   
 
     if(runwayAvailable){
-      if(!tQ.empty() && lQ.empty()){
+      if(!tQ.empty() && lQ.empty()){  //a plane is currently taking off
         runwayAvailable = false;
         activateRunway(tQ, currentTime, takeOffTime_start, runwayAvailable, totalTakeOffTime, "Taking off");
+          takeoff = true;
+          takeoffTime = takeoffTime;
       }
-      else if (!lQ.empty()){
+      else if (!lQ.empty()){ //runway occupied and plane needs to land
         runwayAvailable = false;
-        activateRunway(lQ, currentTime, landingTime_start, runwayAvailable, totalLandTime, "Landind");
-
+        activateRunway(lQ, currentTime, landingTime_start, runwayAvailable, totalLandTime, "Landing");
+          landing = true;
+          landingTimeLeft = landingTime;
       }
     }
 
@@ -194,16 +230,22 @@ void mainSim(){
       if (nominalTakeOffTime == takeOffTime && !tQ.empty()){
         runwayAvailable = false;
         deactivateRunway(tQ, "Take Off", runwayAvailable);
+          takeoff = false;
       }
       else if (nominalLandingTime == landingTime && !lQ.empty()){
         runwayAvailable = false;
         deactivateRunway(lQ, "Landing", runwayAvailable);
+          landing = false;
       }
-
     }
 
     if (currentTime > length){
       cout << "End sim" << endl;
+        
+        cout << "STATISTICS" << endl;
+        cout << "Maximum number of planes in landing queue was: " << maxLQSize << endl;
+        cout << "Maximum number of planes in takeoff queue was: " << maxTQSize << endl;
+        cout << "Average min spent waiting to land: " << (totalLandingTimeWait /totalWaitedLandingPlanes) << endl;
       break;
     }
 
