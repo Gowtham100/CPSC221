@@ -47,9 +47,6 @@ int main(void)
    q2 = q1;
    cout << "Contents of queue q2 after q2 = q1 (via  print):\n";
    print(q2); 
-   cout << "Going to move element in 3rd position to the first:\n";
-   q2.move_to_front(3);
-   print(q2);
    cout << endl;
 
    cout << "Queue q2 empty? " << q2.empty() << endl;
@@ -66,9 +63,33 @@ int main(void)
    cout << "Front value in q2?" << endl << q2.front() << endl;
    cout << "Trying to remove front of q2: " << endl;
    q2.dequeue();
- }
-   // system("PAUSE");
+
+   //---------------TESTS FOR MOVETOFRONT-------------//
+   cout << "TESTS: move_to_front" << endl;
+   Queue q3;
+   q3.enqueue(200,0);
+   q3.enqueue(5,0);
+   q3.enqueue(50,0);
+   q3.enqueue(150,0);
+   q3.enqueue(300,0);
+
+   cout << "Q3 b4 test: " << endl;
+   print(q3);
+
+   q3.move_to_front(50);
+
+   cout << "Q3 after moving value 50: " << endl;
+   print(q3);
+
+   system("PAUSE");
    return 0;
+
+ }
+
+  
+
+   // system("PAUSE");
+   //return 0;
 
 }
 
@@ -133,6 +154,7 @@ void mainSim(){
   cout << "Take Off rate (p/h): " ;
   cin  >> takeOffRate;
 
+
   //length of simulation
   cout << "Active time for airport? (min) : " ;
   cin  >> length;
@@ -171,6 +193,7 @@ void mainSim(){
     if (currentTime < length) {
       int randLand = rand() % 60;
       int randTakeoff = rand() % 60;
+      //int flightStatus = rand() % 60;
 
       if (randLand < landRate) {
         cout << '\t' << "Flight " << planeAdd << " Wants to land || Adding to landing Q || " ;
@@ -231,3 +254,6 @@ void mainSim(){
   system("PAUSE");
 
 }
+
+
+
