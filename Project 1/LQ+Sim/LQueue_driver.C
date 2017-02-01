@@ -15,6 +15,7 @@ void activateRunway(Queue & queue, int currentTime, int & startTime, bool & runw
 void deactivateRunway(Queue & queue, string note, bool & runwayAvailable);
 
 void mainSim();
+double avg ( int numerator, int denominator);
 
 void print(Queue q)
 { q.display(cout); }
@@ -66,23 +67,23 @@ int main(void)
    cout << "Trying to remove front of q2: " << endl;
    q2.dequeue();
  }
-    system("PAUSE");
+   // system("PAUSE");
    return 0;
 
 }
 
 void activateRunway(Queue & queue, int currentTime, int & startTime, bool &runwayAvailable , int &length, string note){
-  cout << '\t' <<  note << " from Queue " << queue.front() << endl;
+  cout << '\t' <<  note << " of flight " << queue.front() << endl;
   startTime = currentTime;
   runwayAvailable = false;
 
   //stats
-  length += currentTime - queue.time_at_start();
+  length += currentTime - queue.time_at_start(); // length = length + (currenttime - time it take to move to the front )
 }
 
 void deactivateRunway(Queue & queue, string note, bool &runwayAvailable){
   queue.dequeue();
-  cout << '\t' <<  note << " done " << queue.size() << " in Queue " << endl;
+  cout << '\t' <<  note << " complete " << queue.size() << " plane(s) in flight " << endl;
   runwayAvailable =  true;
 }
 
@@ -94,9 +95,17 @@ void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, 
     maxSize = queue.size();
   }
 
-  totalPlanes++;
+  totalPlanes+=1;
 
 
+}
+
+double avg(int num, int din){
+  if (din == 0){
+    return 0;
+  }
+
+  return ((double)num)/din;
 }
 
 void mainSim(){
@@ -144,6 +153,8 @@ void mainSim(){
 
   int totalTakeOffTime = 0;
   int totalLandTime = 0;
+  int totalPlanesLanding = 0;
+  int totalPlanesTakeOff = 0;
 
   while (true){
     cout << "Time now : " << currentTime << endl;
@@ -154,8 +165,7 @@ void mainSim(){
 
     //random generation
 
-    int totalPlanesLanding = 0;
-    int totalPlanesTakeOff = 0;
+ 
     
 
     if (currentTime < length) {
@@ -163,12 +173,12 @@ void mainSim(){
       int randTakeoff = rand() % 60;
 
       if (randLand < landRate) {
-        cout << '\t' << "Flight " << planeAdd << "Wants to land || Adding to landing Q" ;
+        cout << '\t' << "Flight " << planeAdd << " Wants to land || Adding to landing Q || " ;
         enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLQSize);
       }
 
       if (randTakeoff < takeOffRate){
-        cout << '\t' << "Flight " << planeAdd << "  Wants to take off || Adding to take off Q" ;
+        cout << '\t' << "Flight " << planeAdd << "  Wants to take off || Adding to take off Q || "  ;
         enqueue(tQ, planeAdd, currentTime, totalPlanesTakeOff, maxTQSize);
       }
     }
@@ -180,6 +190,7 @@ void mainSim(){
         runwayAvailable = false;
         activateRunway(tQ, currentTime, takeOffTime_start, runwayAvailable, totalTakeOffTime, "Taking off");
       }
+      //sinze landing iis first priority
       else if (!lQ.empty()){
         runwayAvailable = false;
         activateRunway(lQ, currentTime, landingTime_start, runwayAvailable, totalLandTime, "Landind");
@@ -188,10 +199,10 @@ void mainSim(){
     }
 
     else{
-      int nominalTakeOffTime = currentTime - takeOffTime_start;
+      int nominalTakeOffTime = currentTime - takeOffTime_start;  // - (-1 - 3) = 6
       int nominalLandingTime = currentTime - landingTime_start;
 
-      if (nominalTakeOffTime == takeOffTime && !tQ.empty()){
+      if (nominalTakeOffTime == takeOffTime && !tQ.empty()){    //6 == 3
         runwayAvailable = false;
         deactivateRunway(tQ, "Take Off", runwayAvailable);
       }
@@ -203,12 +214,20 @@ void mainSim(){
     }
 
     if (currentTime > length){
-      cout << "End sim" << endl;
+      cout << "End of program" << endl;
       break;
     }
 
     currentTime+=1;
   }
-  
+  cout << "STATISTICS" << endl;
+  cout << "Maximum number of planes in landing queue was: " << maxLQSize << endl;
+  //cout << "TOTAL LAND TIME: "<< totalLandTime << endl;
+  //cout << "TOTAL TAKE OFF TIME: "<< totalTakeOffTime << endl;
+  cout << "Average minutes spent waiting to land: " << avg(totalLandTime, totalPlanesLanding) << endl;
+  cout << "Maximum number of planes in takeoff queue was: " << maxTQSize << endl;
+  cout << "Average minutes spent waiting to takeoff: " << avg(totalTakeOffTime, totalPlanesTakeOff) << endl;
+
+  system("PAUSE");
 
 }
