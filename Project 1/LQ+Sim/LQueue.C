@@ -128,6 +128,7 @@ void Queue::dequeue()
       cerr << "*** Queue is empty -- can't remove a value ***\n";
 }
 
+//time it takes to move to the front of the Q
 int Queue::time_at_start() const {
   return (myFront -> start);
 }
