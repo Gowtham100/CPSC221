@@ -167,24 +167,23 @@ void Queue::move_to_front(const QueueElement & value)
 
 }
 
-
-void Queue::merge_two_queues(Queue q1, Queue q2) {
+void Queue::merge_two_queues(Queue & q2) {
     // base case
     
     Queue q3;
     
-    if (q1.empty()) {
+    if (empty()) {
         while (!q2.empty()) {
-            q3.enqueue(q2.front(), q2.myFront->start);
+            enqueue(q2.front(), q2.myFront->start);
             q2.dequeue();
         }
-        q1 = q3;
+        return;
     }
     
-    while (!(q1.empty() || q2.empty())) {
-        if (q1.front() <= q2.front()) {
-            q3.enqueue(q1.front(), q1.myFront->start);
-            q1.dequeue();
+    while (!(empty() || q2.empty())) {
+        if (front() <= q2.front()) {
+            q3.enqueue(front(), myFront->start);
+            dequeue();
             q3.display(cout);
         }
         else {
@@ -194,9 +193,9 @@ void Queue::merge_two_queues(Queue q1, Queue q2) {
         }
     }
     
-    while (!q1.empty()) {
-        q3.enqueue(q1.front(), q1.myFront->start);
-        q1.dequeue();
+    while (!empty()) {
+        q3.enqueue(front(), myFront->start);
+        dequeue();
         q3.display(cout);
     }
     
@@ -206,9 +205,11 @@ void Queue::merge_two_queues(Queue q1, Queue q2) {
         q3.display(cout);
     }
     
-    q1 = q3;
+    *this = q3;
+    return;
     // free q3??
 }
+
 
 int Queue::size(){
   int count = 0;
