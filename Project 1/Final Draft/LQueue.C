@@ -81,9 +81,9 @@ bool Queue::empty() const
 }
 
 //--- Definition of enqueue()
-void Queue::enqueue(const QueueElement & value)
+void Queue::enqueue(const QueueElement & value, const int & value1)
 {
-   Queue::NodePointer newptr = new Queue::Node(value);
+   Queue::NodePointer newptr = new Queue::Node(value,value1);
    if (empty())
       myFront = myBack = newptr;
    else
@@ -128,10 +128,15 @@ void Queue::dequeue()
       cerr << "*** Queue is empty -- can't remove a value ***\n";
 }
 
+//time it takes to move to the front of the Q
+int Queue::time_at_start() const {
+  return (myFront -> start);
+}
+
 void Queue::move_to_front(const QueueElement & value)
 {
   Queue::NodePointer ptr;
-  Queue::NodePointer prev_ptr = NULL;
+  Queue::NodePointer prev_ptr = 0;
 
 //if chosen node is already in front
   if (myFront->data == value){
@@ -144,21 +149,20 @@ void Queue::move_to_front(const QueueElement & value)
 
   for (ptr = myFront; ptr != 0 /*not the first element*/ ; ptr = ptr->next){
   if (ptr->data == value){
-
-    ptr->next = myFront;
-    myFront = ptr;
-
-
-
-    if (ptr == myBack){
-      prev_ptr->next = 0; //ass. temp ptr tot he first position
-      myBack = prev_ptr; // move it to the front
-    } else{
-      prev_ptr->next = ptr->next;//keep moving on
+      if (ptr == myFront){
+        return;
+      }
+    else{
+      prev_ptr->next = ptr->next;
+      ptr->next = myFront;
+      myFront = ptr;
+    
+      ptr = NULL;
+      ptr = prev_ptr;
+      break;
     }
-    break;
   }
-  prev_ptr = ptr;
+    prev_ptr = ptr;
 }
 
 }
@@ -171,7 +175,7 @@ void Queue::merge_two_queues(Queue q1, Queue q2) {
     
     if (q1.empty()) {
         while (!q2.empty()) {
-            q3.enqueue(q2.front());
+            q3.enqueue(q2.front(), q2.myFront->start);
             q2.dequeue();
         }
         q1 = q3;
@@ -179,31 +183,42 @@ void Queue::merge_two_queues(Queue q1, Queue q2) {
     
     while (!(q1.empty() || q2.empty())) {
         if (q1.front() <= q2.front()) {
-            q3.enqueue(q1.front());
+            q3.enqueue(q1.front(), q1.myFront->start);
             q1.dequeue();
             q3.display(cout);
         }
         else {
-            q3.enqueue(q2.front());
+            q3.enqueue(q2.front(), q2.myFront->start);
             q2.dequeue();
             q3.display(cout);
         }
     }
     
     while (!q1.empty()) {
-        q3.enqueue(q1.front());
+        q3.enqueue(q1.front(), q1.myFront->start);
         q1.dequeue();
         q3.display(cout);
     }
     
     while (!q2.empty()) {
-        q3.enqueue(q2.front());
+        q3.enqueue(q2.front(), q2.myFront->start);
         q2.dequeue();
         q3.display(cout);
     }
     
     q1 = q3;
     // free q3??
+}
+
+int Queue::size(){
+  int count = 0;
+  Queue::NodePointer ptr;
+
+  for (ptr = myFront; ptr != 0; ptr = ptr->next){
+    count++;
+  }
+
+  return count;
 }
 
 
