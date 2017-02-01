@@ -13,7 +13,8 @@ using namespace std;
 void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, int & maxSize);
 void activateRunway(Queue & queue, int currentTime, int & startTime, bool & runwayAvailable , int & length, string note);
 void deactivateRunway(Queue & queue, string note, bool & runwayAvailable);
-void emergencyLanding(const int planeAdds);
+//void emergencyLanding(const int planeAdds);
+void emergencyRedirectedFlight(const int planeAdd, int currentTime, Queue & queue);
 
 void mainSim();
 double avg ( int numerator, int denominator);
@@ -130,10 +131,21 @@ double avg(int num, int din){
   return ((double)num)/din;
 }
 
-void emergencyLanding(const int planeAdds, Queue & queue){
+/*void emergencyLanding(const int planeAdds, Queue & queue){
   queue.move_to_front(planeAdds);
   cout << "Due to an emergency landing flight " << planeAdds << "immediately." << endl; 
-}
+}*/
+
+  void emergencyRedirectedFlight(const int planeAdd, int currentTime, Queue & queue){
+    Queue eQ; //emergency queue
+    eQ.enqueue(planeAdd, currentTime);
+    eQ.merge_two_queues(queue);
+    eQ.move_to_front(planeAdd);
+    cout << "Flight "<<planeAdd<<  " bound to Okanagan airport needs EMERGENCY LANDING" << endl;
+    cout << "Flight "<<planeAdd<<  " is merged into Landing Q and moved to front" << endl;
+
+
+  }
 
 void mainSim(){
   int landingTime;
@@ -202,10 +214,11 @@ void mainSim(){
       //int emergencyLand = (rand() % 100);
 
 
+
       if (randLand < landRate) {
         enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLQSize);
-        if (rand() % 100 < 5){
-          emergencyLanding(planeAdd, lQ);
+        if (rand() % 100 < 30){
+          emergencyRedirectedFlight(planeAdd, currentTime, lQ);
           }else{
              cout << '\t' << "Flight " << planeAdd << " Wants to land || Adding to landing Q || " ;
           }
