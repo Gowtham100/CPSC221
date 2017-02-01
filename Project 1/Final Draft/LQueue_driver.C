@@ -13,6 +13,7 @@ using namespace std;
 void enqueue(Queue & queue, int & planeAdd, int currentTime, int & totalPlanes, int & maxSize);
 void activateRunway(Queue & queue, int currentTime, int & startTime, bool & runwayAvailable , int & length, string note);
 void deactivateRunway(Queue & queue, string note, bool & runwayAvailable);
+void emergencyLanding(const int planeAdds);
 
 void mainSim();
 double avg ( int numerator, int denominator);
@@ -129,6 +130,11 @@ double avg(int num, int din){
   return ((double)num)/din;
 }
 
+void emergencyLanding(const int planeAdds, Queue & queue){
+  queue.move_to_front(planeAdds);
+  cout << "Due to an emergency landing flight " << planeAdds << "immediately." << endl; 
+}
+
 void mainSim(){
   int landingTime;
   int takeOffTime;
@@ -193,17 +199,25 @@ void mainSim(){
     if (currentTime < length) {
       int randLand = rand() % 60;
       int randTakeoff = rand() % 60;
-      //int flightStatus = rand() % 60;
+      //int emergencyLand = (rand() % 100);
+
 
       if (randLand < landRate) {
-        cout << '\t' << "Flight " << planeAdd << " Wants to land || Adding to landing Q || " ;
         enqueue(lQ, planeAdd, currentTime, totalPlanesLanding, maxLQSize);
+        if (rand() % 100 < 5){
+          emergencyLanding(planeAdd, lQ);
+          }else{
+             cout << '\t' << "Flight " << planeAdd << " Wants to land || Adding to landing Q || " ;
+          }
       }
 
       if (randTakeoff < takeOffRate){
         cout << '\t' << "Flight " << planeAdd << "  Wants to take off || Adding to take off Q || "  ;
         enqueue(tQ, planeAdd, currentTime, totalPlanesTakeOff, maxTQSize);
       }
+
+      
+
     }
 
   
