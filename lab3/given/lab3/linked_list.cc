@@ -59,28 +59,24 @@ std::vector<int> to_vector(Node* head) {
  * POST: else head remains the first Node in the linked_list
  */
 void delete_last_element(Node*& head){
-  // ******** WRITE YOUR CODE HERE ********
-
-  Node * current = head;
-
-  if (head == NULL){
-      return;
+ // ******** WRITE YOUR CODE HERE ********
+  if(head == NULL){
+    return;
   }
-  if (head->next == NULL){
+  else if(head->next == NULL){
     delete head;
     head = NULL;
   }
-  else {
-    Node * last = head -> next;
-    
-      while(last->next != NULL){
-        current = last;
-        last = last -> next;
-      }
-      delete last;
-      current -> next = NULL;
+  else{
+  Node* curr = head;
+  Node* tail = head->next;
+  while(tail->next != NULL){
+    curr = tail;
+    tail = tail->next;
   }
-
+  delete tail;
+  curr->next = NULL;
+}
 }
 
 /**
@@ -94,13 +90,30 @@ void delete_last_element(Node*& head){
  */ 
 void remove(Node*& head, int oldKey) {
   // ******** WRITE YOUR CODE HERE ********
-  Node * current = head;
-  if (head == NULL){
-    return;
+  int headkey = head->key;
+  if(head == NULL){
+  return;
   }
-  if (current -> key == oldKey){
-    delete oldKey;
-
+  if(headkey == oldKey){
+  Node* newhead = head->next;
+  delete head;
+  head = newhead;
+  } 
+  else{
+  Node* temp = head;
+  int tempkey = temp->key;
+  Node* before = NULL;
+  Node* after = NULL;
+  while(temp->next != NULL && !(tempkey == oldKey)){
+  before = temp;
+  temp = temp->next;
+  tempkey = temp->key;
+  }
+  if(temp != NULL && (tempkey == oldKey)){   //   Added & statement.
+  after = temp->next;
+  delete temp;
+  before->next = after;
+  }
   }
 
 }
@@ -116,19 +129,27 @@ void remove(Node*& head, int oldKey) {
  */
 void insert_after(Node* head, int oldKey, int newKey){
   // ******** WRITE YOUR CODE HERE ********
-
-  if (head == NULL){
-    return;
+  if(head == NULL){
+  return;
   }
-  if (head -> key == oldKey){
-    Node * newNode = new Node;
-    newNode->key = newKey;
-    newNode->next = head -> next;
-    head->next = newNode;
-    return;
-  }
-  insert_after(head->next,oldKey,newKey);
+  else{
+  Node* curr = head;
+  int currkey = curr->key;
+  Node* after = NULL;
+  Node* newnode = new Node;
   
+  while(curr->next != NULL && !(currkey == oldKey)){
+  curr = curr->next;
+  currkey = curr->key;
+  }
+  if(curr != NULL && (currkey == oldKey)){
+  after = curr->next;
+  newnode->next = after;
+  curr->next = newnode;
+  newnode->key = newKey;
+  }
+  else{return;}
+  }
 
 }
 
@@ -143,7 +164,36 @@ void insert_after(Node* head, int oldKey, int newKey){
  * For example: [1, 2] and [3, 4, 5] would return [1, 3, 2, 4, 5]
  */
 Node* interleave(Node* list1, Node* list2){
-  // ******** WRITE YOUR CODE HERE ********
-  return NULL;  // ******** DELETE THIS LINE ********
+// ******** WRITE YOUR CODE HERE ********
+  if(list1 == NULL){return list2;}
+  if(list2 == NULL){return list1;}
+  //if lists are equal, copy one twice (i.e. 1,2,3 == 1,1,2,2,3,3)??
+  /*else{
+    Node* temp1 = list1;
+    Node* temp2 = list1;
+    list1 = list1->next;
+    while(list1 != NULL && list2 != NULL){
+    temp2->next = list2;
+    list2 = list2->next;
+    temp2 = temp2->next;
+    temp2->next = list1;
+    list1 = list1->next;
+    temp2 = temp2->next;
+    }*/
+    Node * merge = new Node;
+    if (list1 != NULL){
+      merge->key = list1->key;
+      if (list2 != NULL){
+        //natural recursion
+      merge->next = interleave(list2, list1->next);
+    }else{
+      merge->next = list1->next;
+    }
+    }
+    else{
+      merge = list2;
+    }
+    return merge;
+
 
 }

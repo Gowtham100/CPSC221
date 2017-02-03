@@ -145,15 +145,7 @@ void CDate::setDate(int year, std::string month, int day){
 	// TODO you need to fill in the code here        ********
 	// HINT use monthStr2Num to get the month_num 
 	// and then reuse another function
-	if (isValidDate(year, month, day)){
-		m_year = year;
-		m_month = month;
-		m_day = day;
-	}
-
-	else{
-		m_year = m_day = m_month = 0;
-	}
+	CDate::setDate(year, monthStr2Num(month), day);
 }
 
 void CDate::print(void){
