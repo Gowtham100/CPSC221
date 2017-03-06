@@ -10,7 +10,7 @@ string_bst::string_bst(){
 }
 
 string_bst::~string_bst()
-{ 
+{
 	remove(root);
 }
 
@@ -24,8 +24,8 @@ void string_bst::remove(node_t *& n) {
 }
 
 bool string_bst::empty() const
-{ 
-   	return (root == 0); 
+{
+   	return (root == 0);
 }
 
 void string_bst::insert(const tree_key & key)
@@ -61,7 +61,7 @@ void string_bst::print_in_order(node_t *n) const {
 }
 
 int string_bst::size() const {
-	return num_nodes;	
+	return num_nodes;
 }
 
 string_bst::node_t* string_bst::get_root() const {
@@ -69,9 +69,22 @@ string_bst::node_t* string_bst::get_root() const {
 }
 
 int string_bst::word_frequency(const tree_key &key) const {
-	
+
 	// ADD CODE HERE
-		
-	return 0;
+	node_t* root = get_root();
+          if(!root)
+              return 0;
+          else return word_frequency_helper(key, root);
 }
 
+	int string_bst::word_frequency_helper(tree_key const &key, node_t *root) const{
+         if (!root)
+              return 0;
+         if(root->data.word == key)
+              return 1;
+          if(root->data.word < key)
+              return word_frequency_helper(key, root->right);
+          if(root->data.word > key)
+              return word_frequency_helper(key, root->left);
+          return 0;
+}

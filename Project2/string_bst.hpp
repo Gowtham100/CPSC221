@@ -41,12 +41,12 @@ class string_bst
 
 
   /*-----------------------------------------------------------------------
-    Class destructor 
+    Class destructor
 
     Precondition:  None.
     Postcondition: The nodes in the tree have been deallocated.
   -----------------------------------------------------------------------*/
-  ~string_bst(); 
+  ~string_bst();
 
   // implicit copy constructor fix
   string_bst(string_bst&& other){
@@ -63,7 +63,7 @@ class string_bst
 
   string_bst(string_bst const&) = delete;
   string_bst& operator=(string_bst const&) = delete;
-  
+
   /*-----------------------------------------------------------------------
     Check if tree is empty.
 
@@ -88,44 +88,44 @@ class string_bst
     Precondition:  Tree is nonempty.
     Postcondition: Tree has not been modified, contents have been using
     an inorder traversal.
-  -----------------------------------------------------------------------*/  
+  -----------------------------------------------------------------------*/
   void display() const;
 
   /*-----------------------------------------------------------------------
-    Returns the number of elements in the tree. 
-    
+    Returns the number of elements in the tree.
+
     Precondition:  Tree is nonempty.
     Postcondition: Tree has not been modified, number of unique elements
     in Tree has been returned.
-  -----------------------------------------------------------------------*/    
+  -----------------------------------------------------------------------*/
   int size() const;
-  
+
    /*-----------------------------------------------------------------------
     Returns the freq value of the Tree Node item with equivalent key, or
 	zero if no item with an equivalent key is found
-    
+
     Precondition:  Tree is nonempty.
     Postcondition: Tree has not been modified, value of freq for item with
 	matching key is returned.
-  -----------------------------------------------------------------------*/ 
+  -----------------------------------------------------------------------*/
   int word_frequency(tree_key const& key) const;
 
   /*-----------------------------------------------------------------------
-    Returns a pointer to the root node of the Tree 
-    
+    Returns a pointer to the root node of the Tree
+
     Precondition:  Tree is nonempty.
     Postcondition: Tree has not been modified, pointer to root node has
 	been returned.
   -----------------------------------------------------------------------*/
   node_t* get_root() const;
-  
- private:  
+
+ private:
   node_t * root;
   int num_nodes;
-  
+
   void insert_helper(node_t *& n, tree_key const& key);
   void print_in_order(node_t *n) const;
   void remove(node_t *& n);
-  
-}; // end of class declaration
+  int word_frequency_helper(tree_key const & key, node_t *root) const;
 
+}; // end of class declaration
